@@ -25,11 +25,10 @@ public class main {
                     System.out.println("Your information has been registered.");
                     break;
                 case 2:
-                    System.out.println("Enter student ID to update: ");
                     StudentList.update();
                     break;
                 case 3:
-                    System.out.println("Register students:");
+                    System.out.println("Registered students:");
                     StudentList.showAll(students);
                     break;
                 case 4:
@@ -50,10 +49,10 @@ public class main {
                 case 9:
                     StudentList.exitProgram();
                     break;
-                default:
-                    System.out.println("Your choice is invalid! TRY AGAIN!!!");
+                default: 
+                    System.out.println("This function is not available. TRY AGAIN!!!");
                     break;
             }
-        } while (choice >= 1 && choice <= 9);
+        } while (choice != 9);
     }
 }

@@ -15,13 +15,10 @@ import model.StastiticalInfo;
 import utils.Menu;
 
 public class StudentList {
-    private static boolean isSaved = true;
+
+    private static boolean isSaved = false;
     public static ArrayList<Student> students = new ArrayList<>();
-    
-    public static boolean isSaved() {
-        return isSaved;
-    }
-    
+
     public static void addNewStudent() {
 
         String studentID = Inputter.getStudentID();
@@ -33,22 +30,19 @@ public class StudentList {
 
         Student student = new Student(studentID, name, phoneNumber, email, mountainCode, tuitionFee);
         students.add(student);
-        showCurrent(student);
-
+        isSaved = false;
     }
 
     public static void update() {
         Scanner sc = new Scanner(System.in);
-        String findStudentID;
         Student student;
-
         while (true) {
             System.out.println("Enter ID of the student to update: ");
-            findStudentID = sc.nextLine();
+            String findStudentID = sc.nextLine();
             student = searchById(findStudentID);
             if (student != null) {
                 student = searchById(findStudentID);
-                System.out.println("Enter new information to update!");
+                System.out.println("Enter new information to update or press 'ENTER' to skip.");
                 break;
             } else {
                 System.out.println("Student not found, TRY AGAIN!");
@@ -56,49 +50,68 @@ public class StudentList {
         }
 
         //name
-        System.out.println("Enter new name to update or press 'ENTER' to skip: ");
-        String newName = sc.nextLine();
-        if (newName.isEmpty()) {
-            System.out.println("No change! Keeping current name!");
-        } else {
-            newName = Inputter.inputName();
-            System.out.println("New name has been saved.");
+        while (true) {
+            System.out.println("Enter new name: ");
+            String newName = sc.nextLine();
+            if (newName.isEmpty()) {
+                System.out.println("No change! Keeping current name.");
+                break;
+            } else if (Inputter.isValid(newName, tool.Acceptable.NAME_VALID)) {
+                student.setName(newName);
+                System.out.println("New name has been updated.");
+                break;
+            } else {
+                System.out.println("Invalid name! TRY AGAIN.");
+            }
         }
-
         //phone number
-        System.out.println("Enter new phone to update or press 'ENTER' to skip: ");
-        String newPhone = sc.nextLine();
-
-        if (newPhone.isEmpty()) {
-            System.out.println("No change! Keeping current phone number!");
-        } else {
-            newPhone = Inputter.inputPhoneNumber();
-            student.setPhoneNumber(newPhone);
-            student.setTuitionFee(newPhone);
-            System.out.println("New phone number has been saved.");
+        while (true) {
+            System.out.println("Enter new phone number: ");
+            String newPhone = sc.nextLine();
+            if (newPhone.isEmpty()) {
+                System.out.println("No change! Keeping current phone number.");
+                break;
+            } else if (Inputter.isValid(newPhone, tool.Acceptable.PHONE_VALID)) {
+                student.setPhoneNumber(newPhone);
+                System.out.println("New phone number has been updated.");
+                break;
+            } else {
+                System.out.println("Invalid phone number! TRY AGAIN.");
+            }
         }
 
         //email
-        System.out.println("Enter new email to update or press 'ENTER' to skip: ");
-        String newEmail = sc.nextLine();
-        if (newEmail.isEmpty()) {
-            System.out.println("No change! Keeping current email!");
-        } else {
-            newEmail = Inputter.inputEmail();
-            student.setEmail(newEmail);
-            System.out.println("New email has been saved.");
+        while (true) {
+            System.out.println("Enter new email: ");
+            String newEmail = sc.nextLine();
+            if (newEmail.isEmpty()) {
+                System.out.println("No change! Keeping current email.");
+                break;
+            } else if (Inputter.isValid(newEmail, tool.Acceptable.EMAIL_VALID)) {
+                student.setEmail(newEmail);
+                System.out.println("New email has been updated.");
+                break;
+            } else {
+                System.out.println("Invalid email! TRY AGAIN.");
+            }
         }
 
         //mountain code
-        System.out.println("Enter new email to update or press 'ENTER' to skip: ");
-        String newMountain = sc.nextLine();
-        if (newMountain.isEmpty()) {
-            System.out.println("No change! Keeping current mountain code!");
-        } else {
-            newMountain = Inputter.mountainCode();
-            student.setMountainCode(newMountain);
-            System.out.println("New mountain code has been saved.");
+        while (true) {
+            System.out.println("Enter new mountain code: ");
+            String newMountain = sc.nextLine();
+            if (newMountain.isEmpty()) {
+                System.out.println("No change! Keeping current mountain code.");
+                break;
+            } else if (MountainList.isValidMountainCode(newMountain)) {
+                student.setMountainCode("MT" + newMountain);
+                System.out.println("New mountain code has been updated.");
+                break;
+            } else {
+                System.out.println("Invalid mountain code! TRY AGAIN.");
+            }
         }
+
         isSaved = false;
         System.out.println("Successfully updated!!");
     }
@@ -261,6 +274,12 @@ public class StudentList {
         System.out.println("--------------------------------------------------");
     }
 
+    public static String formatTuitionFee(double tuitionFee) {
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
+        String finalTuitionFee = decimalFormat.format(tuitionFee);
+        return finalTuitionFee;
+    }
+
     public static void saveData() {
         Scanner sc = new Scanner(System.in);
         System.out.println("Do you want to save Registration? (Y/N)");
@@ -274,19 +293,23 @@ public class StudentList {
         }
     }
 
-    public static String formatTuitionFee(double tuitionFee) {
-        DecimalFormat decimalFormat = new DecimalFormat("#,###");
-        String finalTuitionFee = decimalFormat.format(tuitionFee);
-        return finalTuitionFee;
-    }
-    
     public static void exitProgram() {
         Scanner sc = new Scanner(System.in);
-        if (!isSaved) {
-            System.out.println("Do you want to save the changes before exiting? (Y/N)");
-            String choice1 = sc.nextLine();
-            if (choice1.equalsIgnoreCase("Y")) {
-                saveData();
+        while (true) {
+            if (isSaved == false) {
+                System.out.println("Do you want to save the changes before exiting? (Y/N)");
+                String exit = sc.nextLine();
+                if (exit.equalsIgnoreCase("y")) {
+                    writeToFile();
+                    break;
+                } else if (exit.equalsIgnoreCase("n")) {
+                    System.out.println("Exit program without save successfully!");
+                    break;
+                } else {
+                    System.out.println("Invalid input. TRY AGAIN!!!");
+                }
+            } else {
+                break;
             }
         }
     }
