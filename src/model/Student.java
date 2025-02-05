@@ -75,6 +75,4 @@ public class Student implements Serializable {
     public String toString() {
         return String.format("| %-12s| %-19s| %-13s| %-14s| %-12s|", studentID, name, phoneNumber, mountainCode, tuitionFee);
     }
-
-    
 }

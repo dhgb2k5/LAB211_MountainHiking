@@ -10,7 +10,7 @@ public class main {
     public static void main(String[] args) {
         
         Scanner sc = new Scanner(System.in);
-        StudentList.writeToFile();
+        StudentList.readFromFile();
         MountainList.readFromFile();
         int choice;
         do {

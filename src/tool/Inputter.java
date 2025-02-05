@@ -3,7 +3,7 @@ package tool;
 import java.util.UUID;
 import java.util.Scanner;
 import collections.MountainList;
-import collections.StudentList;
+
 
 public class Inputter {
 

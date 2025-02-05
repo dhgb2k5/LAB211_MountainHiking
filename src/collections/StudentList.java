@@ -16,7 +16,7 @@ import utils.Menu;
 
 public class StudentList {
 
-    private static boolean isSaved = false;
+    private static boolean isSaved = true;
     public static ArrayList<Student> students = new ArrayList<>();
 
     public static void addNewStudent() {
@@ -186,10 +186,9 @@ public class StudentList {
         System.out.println("Choose campus to filter: ");
         Menu.campusMenu();
         String campus = Inputter.inputCampus();
-        String campusName;
-
+        
         for (Student student : students) {
-            campusName = student.getStudentID().substring(0, 2);
+           String campusName = student.getStudentID().substring(0,2);
             if (campusName.equals(campus)) {
                 filtedByCampus.add(student);
             }
@@ -240,6 +239,7 @@ public class StudentList {
         try (FileOutputStream fos = new FileOutputStream(filePath);
                 ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(students);
+            isSaved = true;
         } catch (Exception e) {
             e.getStackTrace();
         }
